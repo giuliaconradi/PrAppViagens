@@ -5,5 +5,5 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun SobreViagem(){
-    Text(text = "Hello Sobre Viagem!")
+    Text(text = "Aplicativo desenvolvido por Giulia Conradi :)")
 }
