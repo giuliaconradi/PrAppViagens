@@ -18,6 +18,7 @@ class UserRepository(private val userDao: UserDao) {
     }
 
     fun delete(user: User) {
+
         coroutine.launch(Dispatchers.IO) {
             userDao.delete(user)
         }
@@ -26,4 +27,6 @@ class UserRepository(private val userDao: UserDao) {
     suspend fun loadAllUsers(): List<User> {
         return userDao.getAll()
     }
+    suspend fun findByName(name: String): User? =
+        userDao.findByName(name)
 }

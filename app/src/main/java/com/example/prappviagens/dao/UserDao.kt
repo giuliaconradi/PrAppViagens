@@ -19,7 +19,7 @@ interface UserDao {
     suspend fun getAll(): List<User>
 
     @Query("select * from user u where u.name = :name")
-    suspend fun findByName(name: String): User
+    suspend fun findByName(name: String): User?
 
 
 
