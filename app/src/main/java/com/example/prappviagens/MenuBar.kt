@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.prappviagens.ListaViagem
+import com.example.prappviagens.NovaViagem
 
 @Composable
 fun MenuBar() {

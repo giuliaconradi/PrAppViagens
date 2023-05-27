@@ -8,8 +8,8 @@ import com.example.prappviagens.repository.UserRepository
 
 class RegisterNewUserViewModelFactory(val application: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-       val dao = AppDatabase.getDatabase(application).userDao()
-       val userRepository = UserRepository(dao)
+        val dao = AppDatabase.getDatabase(application).userDao()
+        val userRepository = UserRepository(dao)
         return RegisterNewUserViewModel(userRepository) as T
     }
 }

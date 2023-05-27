@@ -41,22 +41,28 @@ fun Login(onNavigateMenuBar: () -> Unit, onNavigateNovoCadastro: () -> Unit) {
         var username by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
         TextField(
-            value = username,
-            onValueChange = { username = it },
+            value = viewModel.name,
+            onValueChange = { viewModel.name = it },
             label = { Text(text = "Username") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text)
         )
         Spacer(modifier = Modifier.height(16.dp))
         TextField(
-            value = password,
-            onValueChange = { password = it },
+            value = viewModel.password,
+            onValueChange = { viewModel.password = it },
             label = { Text(text = "Password") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password)
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                onNavigateMenuBar()
+                focusManager.clearFocus()
+                viewModel.validateLogin(onResult = {
+                    Log.i("Login", "Result ${it}")
+                    if (it) {
+                        onNavigateMenuBar()
+                    }
+                })
             },
             modifier = Modifier.height(45.dp).width(275.dp)
         ) {
@@ -70,17 +76,7 @@ fun Login(onNavigateMenuBar: () -> Unit, onNavigateNovoCadastro: () -> Unit) {
         }
         val isValidLogin by remember { mutableStateOf(false) }
 
-        Button(
-            onClick = {
-                focusManager.clearFocus()
-                viewModel.validateLogin(onResult = {
-                    Log.i("Login", "Result ${it}")
-                })
-            },
-            modifier = Modifier.height(45.dp).width(275.dp)
-        ) {
-            Text(text = "Login")
-        }
     }
 }
+
 

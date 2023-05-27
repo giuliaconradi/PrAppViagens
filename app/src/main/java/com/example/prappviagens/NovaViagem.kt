@@ -1,6 +1,7 @@
-package com.example.prappviagens.ui.theme
+package com.example.prappviagens
 
 import android.annotation.SuppressLint
+import android.app.Application
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
@@ -17,19 +18,30 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.prappviagens.viewModel.RegisterNewUserViewModel
+import com.example.prappviagens.viewModel.RegisterNewUserViewModelFactory
+import com.example.prappviagens.viewModel.RegisterNewViagemViewModel
+import com.example.prappviagens.viewModel.RegisterNewViagemViewModelFactory
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun NovaViagem() {
-    var destination by remember { mutableStateOf("") }
-    var startDate by remember { mutableStateOf("") }
-    var endDate by remember { mutableStateOf("") }
-    var budget by remember { mutableStateOf("") }
+    val application = LocalContext.current.applicationContext as Application
+    val viewModel: RegisterNewViagemViewModel = viewModel(
+        factory = RegisterNewViagemViewModelFactory(application)
+    )
+    var destino by remember { mutableStateOf("") }
+    var data_inicio by remember { mutableStateOf("") }
+    var data_final by remember { mutableStateOf("") }
+    var orcamento by remember { mutableStateOf("") }
+    val scaffoldState = rememberScaffoldState()
 
     Scaffold(
         topBar = {
@@ -48,39 +60,40 @@ fun NovaViagem() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             OutlinedTextField(
-                value = destination,
-                onValueChange = { destination = it },
+                value = viewModel.destino,
+                onValueChange = { viewModel.destino = it },
                 label = { Text("Destino") },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
-                value = startDate,
-                onValueChange = { startDate = it },
+                value = viewModel.data_inicial,
+                onValueChange = { viewModel.data_inicial = it },
                 label = { Text("Data Inicial") },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
-                value = endDate,
-                onValueChange = { endDate = it },
+                value = viewModel.data_final,
+                onValueChange = { viewModel.data_final = it },
                 label = { Text("Data Final") },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
-                value = budget,
-                onValueChange = { budget = it },
+                value = viewModel.orcamento,
+                onValueChange = { viewModel.orcamento = it },
                 label = { Text("Orçamento") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
-                ),
-                visualTransformation = PasswordVisualTransformation(),
+                ), 
                 modifier = Modifier.fillMaxWidth()
             )
 
             Button(
-                onClick = { /* Salvar formulário */ },
+                onClick = {
+                    viewModel.registrar()
+                },
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .fillMaxWidth()
