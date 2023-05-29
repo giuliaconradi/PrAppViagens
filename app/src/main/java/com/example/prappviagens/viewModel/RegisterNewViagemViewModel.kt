@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 
 class RegisterNewViagemViewModel(private val ViagemRepository: ViagemRepository): ViewModel() {
 
+        var userID by mutableStateOf("")
         var destino by mutableStateOf("")
         var data_inicial by mutableStateOf("")
         var data_final by mutableStateOf("")
@@ -34,7 +35,7 @@ class RegisterNewViagemViewModel(private val ViagemRepository: ViagemRepository)
             val orcamentoFloat = orcamento.toFloatOrNull() ?: 0.0f
             try {
                 validateFields()
-                val newViagem = Viagem(destino = destino, data_inicial = data_inicial, data_final = data_final, orcamento = orcamentoFloat)
+                val newViagem = Viagem(userID = userID, destino = destino, data_inicial = data_inicial, data_final = data_final, orcamento = orcamentoFloat)
                 ViagemRepository.addViagem(newViagem)
             } catch (e: Exception) {
                 viewModelScope.launch {

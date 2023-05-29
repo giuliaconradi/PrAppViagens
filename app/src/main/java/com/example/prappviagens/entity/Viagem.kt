@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
     @Entity(tableName = "viagem")
     data class Viagem(
         @PrimaryKey(autoGenerate = true) val id: Int =  0,
+        val userID: String,
         val destino: String,
         val data_inicial: String,
         val data_final: String,

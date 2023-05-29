@@ -9,9 +9,11 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.prappviagens.ListaViagem
 import com.example.prappviagens.NovaViagem
 
@@ -58,20 +60,24 @@ fun MenuBar() {
                 )
             }
         }
-    ){
-            NavHost(navController = navController,
-                startDestination = "novo",
-                modifier = Modifier.padding(paddingValues = it)
+    ) {
+        NavHost(
+            navController = navController,
+            startDestination = "novo",
+            modifier = Modifier.padding(paddingValues = it)
+        ) {
+            composable("novo/{userID}",
+                arguments = listOf(navArgument("userId") { type = NavType.StringType })
             ) {
-                composable("novo") {
-                    NovaViagem()
-                }
-                composable("viagens") {
-                    ListaViagem()
-                }
-                composable("sobre") {
-                    SobreViagem()
-                }
+                val id = it.arguments?.getString("userID")
+                NovaViagem()
             }
+            composable("viagens") {
+                ListaViagem()
+            }
+            composable("sobre") {
+                SobreViagem()
+            }
+        }
     }
 }
