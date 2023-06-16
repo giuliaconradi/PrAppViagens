@@ -10,5 +10,6 @@ import androidx.room.PrimaryKey
         val destino: String,
         val data_inicial: String,
         val data_final: String,
-        val orcamento: Float
+        val orcamento: Float,
+        val reason: Int
     )

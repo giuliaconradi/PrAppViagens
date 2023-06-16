@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.prappviagens.entity.Viagem
 import com.example.prappviagens.repository.ViagemRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
@@ -17,7 +18,8 @@ class RegisterNewViagemViewModel(private val ViagemRepository: ViagemRepository)
         var destino by mutableStateOf("")
         var data_inicial by mutableStateOf("")
         var data_final by mutableStateOf("")
-        var orcamento by mutableStateOf("")
+        var orcamento by mutableStateOf(0f)
+        var reason by mutableStateOf(0)
 
         var isDestinoValid by mutableStateOf(true)
 
@@ -31,11 +33,15 @@ class RegisterNewViagemViewModel(private val ViagemRepository: ViagemRepository)
             }
         }
 
+         fun updateExpenses(id: Int, orcamento: Float){
+             ViagemRepository.attATravel(id, orcamento)
+         }
+
         fun registrar() {
-            val orcamentoFloat = orcamento.toFloatOrNull() ?: 0.0f
+            val orcamentoFloat = orcamento
             try {
                 validateFields()
-                val newViagem = Viagem(userID = userID, destino = destino, data_inicial = data_inicial, data_final = data_final, orcamento = orcamentoFloat)
+                val newViagem = Viagem(userID = userID, destino = destino, data_inicial = data_inicial, data_final = data_final, orcamento = orcamentoFloat, reason = reason)
                 ViagemRepository.addViagem(newViagem)
             } catch (e: Exception) {
                 viewModelScope.launch {
@@ -44,4 +50,13 @@ class RegisterNewViagemViewModel(private val ViagemRepository: ViagemRepository)
             }
 
         }
+    val travels: MutableStateFlow<List<Viagem>> = MutableStateFlow(emptyList())
+
+    fun getTravels(userId: Int) {
+        viewModelScope.launch {
+            val travelsRepo = ViagemRepository.getAllTravels(userId)
+            travels.value = travelsRepo
+        }
+    }
+
     }

@@ -5,11 +5,13 @@ import com.example.prappviagens.entity.Viagem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ViagemRepository (private val ViagemDao: ViagemDao) {
 
 
     private val coroutine = CoroutineScope(Dispatchers.Main)
+
 
     fun addViagem(viagem: Viagem) {
         coroutine.launch(Dispatchers.IO) {
@@ -23,9 +25,25 @@ class ViagemRepository (private val ViagemDao: ViagemDao) {
         }
     }
 
-    suspend fun loadAllViagem(): List<Viagem> {
-        return ViagemDao.getAll()
+    class TravelRepository(private val travelDao: ViagemDao) {
+        private val coroutine = CoroutineScope(Dispatchers.Main)
+
+        fun addTravel(travel: Viagem) {
+            coroutine.launch(Dispatchers.IO) {
+                travelDao.insert(travel)
+            }
+        }
+
     }
-    suspend fun findByViagem(viagem: String): Viagem? =
-        ViagemDao.findbyViagem(viagem)
+    suspend fun getAllTravels(userId: Int): List<Viagem> {
+        return withContext(Dispatchers.IO) {
+            ViagemDao.findAllByUserId(userId)
+        }
+    }
+    fun attATravel(id: Int,  orcamento: Float){
+        coroutine.launch(Dispatchers.IO){
+            ViagemDao.incrementExpenses(id,orcamento)
+        }
+    }
 }
+
