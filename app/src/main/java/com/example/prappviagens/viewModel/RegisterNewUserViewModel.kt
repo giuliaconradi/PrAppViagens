@@ -8,6 +8,7 @@ import com.example.prappviagens.repository.UserRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 class RegisterNewUserViewModel(private val userRepository: UserRepository): ViewModel() {
@@ -41,6 +42,14 @@ class RegisterNewUserViewModel(private val userRepository: UserRepository): View
             }
         }
 
+    }
+    fun UsuarioExiste() =
+        runBlocking {
+            val newUser = User(name = name, password = password, email = email)
+            userRepository.getUsers(newUser)
+        }
+    fun userTravel(user: String) = runBlocking {
+        userRepository.findUser(user)
     }
 
 }

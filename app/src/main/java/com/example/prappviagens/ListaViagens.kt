@@ -33,7 +33,7 @@ fun screen(
     isItemSelected: Boolean,
     viewModel: RegisterNewViagemViewModel,
     onCardClick: (Viagem) -> Unit,
-    onNavigateHome: () -> Unit,
+    onNavigateMenuBar: () -> Unit,
 ) {
 
     Card(
@@ -83,7 +83,7 @@ fun screen(
             Button(
                 onClick = {
                     viewModel.updateExpenses(travels.id, calculateExpense(travels.orcamento,viewModel.orcamento))
-                    onNavigateHome()
+                    onNavigateMenuBar()
                 },
                 modifier = Modifier
                     .padding(top = 16.dp)
@@ -152,7 +152,7 @@ fun moreExpenses(travels: Viagem, viewModel: RegisterNewViagemViewModel) {
 }
 
 @Composable
-fun ListTravels(userID: String, onNavigateHome:() -> Unit) {
+fun ListaViagens(userID: String, onNavigateHome:() -> Unit) {
     val application = LocalContext.current.applicationContext as Application
     val viewModel: RegisterNewViagemViewModel = viewModel(
         factory = RegisterNewViagemViewModelFactory(application)
@@ -173,7 +173,7 @@ fun ListTravels(userID: String, onNavigateHome:() -> Unit) {
             screen(travel, iconReason, selectedTravelId.value != null, viewModel, onCardClick = {
                 selectedTravelId.value = it.id
             },
-                onNavigateHome = { selectedTravelId.value = null })
+                onNavigateMenuBar = { selectedTravelId.value = null })
         }
     }
 }

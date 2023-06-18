@@ -37,7 +37,7 @@ class RegisterNewViagemViewModel(private val ViagemRepository: ViagemRepository)
              ViagemRepository.attATravel(id, orcamento)
          }
 
-        fun registrar() {
+        fun registrar(parseInt: Int) {
             val orcamentoFloat = orcamento
             try {
                 validateFields()

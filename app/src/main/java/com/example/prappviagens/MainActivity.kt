@@ -14,10 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.prappviagens.ui.theme.MenuBar
+import androidx.navigation.navArgument
 import com.example.prappviagens.ui.theme.NovoCadastro
 import com.example.prappviagens.ui.theme.PrAppViagensTheme
 import com.example.prappviagens.viewModel.RegisterNewUserViewModel
@@ -28,13 +29,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            PrAppViagensTheme {
-                // A surface container using the 'background' color from the theme
+            PrAppViagensTheme() {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    PrAppViagem()
+                    MyApp()
                 }
             }
         }
@@ -42,41 +42,67 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun PrAppViagem() {
-    val application = LocalContext.current.applicationContext as Application
-    val viewModel: RegisterNewUserViewModel = viewModel(
-        factory = RegisterNewUserViewModelFactory(application)
-    )
+fun MyApp() {
     val navController = rememberNavController()
-    val scaffoldState = rememberScaffoldState()
-    val coroutineScope = rememberCoroutineScope()
 
     NavHost(navController = navController, startDestination = "login") {
         composable("login") {
-            Login(onNavigateMenuBar = {
-                navController.navigate("menubar")
-            },
+            Login(
+                onNavigateMenuBar = { id ->
+                    navController.navigate("MenuBar/$id")
+                },
                 onNavigateNovoCadastro = {
-                    navController.navigate("novocadastro")
-                })
-        }
-        composable("menubar") {
-            MenuBar()
-        }
-        composable("novocadastro") {
-            NovoCadastro(onAfterSave = {
-                navController.navigateUp()
-                coroutineScope.launch {
-                    scaffoldState.snackbarHostState.showSnackbar(
-                        message = "User registered"
-                    )
-                }
-            },
-                onBack = {
-                    navController.navigateUp()
-                }
+                    navController.navigate("NovoCadastro")
+                },
+                onNavigateNovaViagem = { id ->
+                    navController.navigate("NovaViagem/$id")
+                },
+                onNavigateListaViagens = {
+                    navController.navigate("ListaViagens")
+                },
             )
         }
+
+        composable(
+            "MenuBar/{userID}",
+            arguments = listOf(navArgument("userID") { type = NavType.StringType })
+        ) {
+            val id = it.arguments?.getString("userID")
+            if (id != null) {
+                MenuBar(
+                    id
+                )
+            }
+        }
+        composable("NovoCadastro") {
+            NovoCadastro {
+                navController.navigateUp()
+            }
+        }
+        composable(
+            "ListaViagens",
+            arguments = listOf(navArgument("userID") { type = NavType.StringType })
+        ) {
+            val id = it.arguments?.getString("userID")
+            if (id != null) {
+                ListaViagens(id,
+                    onNavigateHome = { navController.navigateUp() })
+            }
+        }
+
+        composable(
+            "NovaViagem/{userID}",
+            arguments = listOf(navArgument("userID") { type = NavType.StringType })
+        ) {
+            val id = it.arguments?.getString("userID")
+            if (id != null) {
+                NovaViagem(
+                    onNavigateMenuBar = { navController.navigateUp() },
+                    id
+                )
+            }
+        }
+
     }
 }
         
@@ -88,6 +114,6 @@ fun Greeting(name: String) {
 @Composable
 fun DefaultPreview() {
     PrAppViagensTheme {
-       PrAppViagem()
+        Greeting("Android")
     }
 }

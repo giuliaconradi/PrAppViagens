@@ -1,6 +1,7 @@
-package com.example.prappviagens.ui.theme
+package com.example.prappviagens
 
-
+import android.util.Log
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -14,18 +15,19 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.prappviagens.ListaViagem
-import com.example.prappviagens.NovaViagem
+import com.example.prappviagens.ui.theme.SobreViagem
 
 @Composable
-fun MenuBar() {
+fun MenuBar(userID: String) {
+
+    println("--> $userID")
     val navController = rememberNavController()
     Scaffold(
         bottomBar = {
             BottomNavigation {
                 BottomNavigationItem(selected = true,
                     onClick = {
-                        navController.navigate("novo")
+                        navController.navigate("cadastroViagem/{userID}")
                     },
                     label = {
                         Text(text = "Novo")
@@ -37,7 +39,7 @@ fun MenuBar() {
 
                 BottomNavigationItem(selected = false,
                     onClick = {
-                        navController.navigate("viagens")
+                        navController.navigate("listarViagem")
                     },
                     label = {
                         Text(text = "Viagens")
@@ -61,23 +63,41 @@ fun MenuBar() {
             }
         }
     ) {
-        NavHost(
-            navController = navController,
-            startDestination = "novo",
-            modifier = Modifier.padding(paddingValues = it)
-        ) {
-            composable("novo/{userID}",
-                arguments = listOf(navArgument("userId") { type = NavType.StringType })
+        Column() {
+            NavHost(
+                navController = navController,
+                startDestination = "listarViagem",
+                modifier = Modifier.padding(paddingValues = it)
             ) {
-                val id = it.arguments?.getString("userID")
-                NovaViagem()
-            }
-            composable("viagens") {
-                ListaViagem()
-            }
-            composable("sobre") {
-                SobreViagem()
+                composable("novo") {
+//                    TelaNovo()
+                }
+                composable(
+                    "cadastroViagem/{userID}",
+                    arguments = listOf(navArgument("userID") { type = NavType.StringType })
+                ) {
+                    if (userID != null) {
+                        Log.i(userID, "$userID Logou")
+                        NovaViagem(
+                            onNavigateMenuBar = { navController.navigateUp() },
+                            userID
+                        )
+                    }
+                }
+                composable("sobre") {
+                    println("Clicou sobre")
+                    SobreViagem()
+                }
+                composable("listarViagem") {
+                    if (userID != null) {
+                        ListaViagens(
+                            userID,
+                            onNavigateHome = { navController.navigateUp() }
+                        )
+                    }
+                }
             }
         }
+
     }
 }

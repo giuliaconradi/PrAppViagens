@@ -19,7 +19,10 @@ interface UserDao {
     suspend fun getAll(): List<User>
 
     @Query("select * from user u where u.name = :name")
-    suspend fun findByName(name: String): User?
+    suspend fun findByName(name: String): User
+
+    @Query("select * from user u where u.name = :name and u.password = :password")
+    suspend fun findByCredentials(name: String, password:String): List<User>
 
 
 
