@@ -25,54 +25,64 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.prappviagens.viewModel.RegisterNewViagemViewModel
 import com.example.prappviagens.viewModel.RegisterNewViagemViewModelFactory
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
-fun screen(
-    travels: Viagem,
-    iconReason: Int,
-    isItemSelected: Boolean,
+fun telaViagem(
+    vgm: Viagem,
+    icone: Int,
+    tipoViagem: Boolean,
     viewModel: RegisterNewViagemViewModel,
     onCardClick: (Viagem) -> Unit,
     onNavigateMenuBar: () -> Unit,
-) {
+)
+
+{
+    fun formatarValores(valor: Float): String {
+        val formato = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
+        return formato.format(valor)
+    }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onCardClick(travels) },
+            .clickable { onCardClick(vgm) },
         elevation = 8.dp,
         backgroundColor = Color.White,
     ) {
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = 8.dp)
+        ) {
             Image(
-                painter = painterResource(iconReason),
+                painter = painterResource(icone),
                 contentDescription = "Icon of travels",
                 modifier = Modifier
                     .size(64.dp)
-                    .padding(end = 16.dp)
             )
-            Row(modifier = Modifier.padding(4.dp)) {
-                Column {
-                    Text(
-                        text = travels.destino,
-                        style = MaterialTheme.typography.subtitle1
-                    )
-                    Text(
-                        text = "${travels.data_inicial} --> ${travels.data_final}",
-                        style = MaterialTheme.typography.subtitle2
-                    )
-                    Text(
-                        text = "Valor Total: ${formatFloat(travels.orcamento)}R$",
-                        style = MaterialTheme.typography.subtitle2
-                    )
-                }
+            Spacer(modifier = Modifier.width(16.dp))
+            Column {
+                Text(
+                    text = vgm.destino,
+                    style = MaterialTheme.typography.subtitle1,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                Text(
+                    text = "${vgm.data_inicial} --> ${vgm.data_final}",
+                    style = MaterialTheme.typography.subtitle2,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                Text(
+                    text = "Valor Total: ${formatarValores(vgm.orcamento)}",
+                    style = MaterialTheme.typography.subtitle2
+                )
             }
-
         }
 
     }
-    if (isItemSelected) {
-        moreExpenses(travels, viewModel = viewModel)
+    if (tipoViagem) {
+        moreExpenses(vgm, viewModel = viewModel)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -82,7 +92,7 @@ fun screen(
         ) {
             Button(
                 onClick = {
-                    viewModel.updateExpenses(travels.id, calculateExpense(travels.orcamento,viewModel.orcamento))
+                    viewModel.updateExpenses(vgm.id, calcularDespesa(vgm.orcamento, viewModel.orcamento))
                     onNavigateMenuBar()
                 },
                 modifier = Modifier
@@ -96,16 +106,12 @@ fun screen(
 
 }
 
-fun formatFloat(number: Float): String {
-    return String.format("%.2f", number)
-}
-
 // Uso:
-fun calculateExpense(oldExpense: Float, newExpense: Float): Float {
-    if (newExpense != 0.0f) {
-        return oldExpense + newExpense
+fun calcularDespesa(anterior: Float, nova: Float): Float {
+    if (nova != 0.0f) {
+        return anterior + nova
     } else {
-        return oldExpense
+        return anterior
     }
 }
 
@@ -165,12 +171,12 @@ fun ListaViagens(userID: String, onNavigateHome:() -> Unit) {
 
 
     LazyColumn() {
-        items(items = travels.filter { selectedTravelId.value == null || it.id == selectedTravelId.value }) { travel ->
-            val iconReason = when (travel.reason) {
-                0 -> R.drawable.bussines
+        items(items = travels.filter { selectedTravelId.value == null || it.id == selectedTravelId.value }) { viagem ->
+            val icone = when (viagem.reason) {
+                0 -> R.drawable.trabalho
                 else -> R.drawable.lazer
             }
-            screen(travel, iconReason, selectedTravelId.value != null, viewModel, onCardClick = {
+            telaViagem(viagem, icone, selectedTravelId.value != null, viewModel, onCardClick = {
                 selectedTravelId.value = it.id
             },
                 onNavigateMenuBar = { selectedTravelId.value = null })
