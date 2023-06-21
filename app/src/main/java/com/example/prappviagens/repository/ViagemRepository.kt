@@ -1,6 +1,7 @@
 package com.example.prappviagens.repository
 
 import com.example.prappviagens.dao.ViagemDao
+import com.example.prappviagens.entity.DespesaViagem
 import com.example.prappviagens.entity.Viagem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +45,15 @@ class ViagemRepository (private val ViagemDao: ViagemDao) {
         coroutine.launch(Dispatchers.IO){
             ViagemDao.incrementExpenses(id,orcamento)
         }
+    }
+    suspend fun getAllThinks(userId: Int): List<DespesaViagem> {
+        return ViagemDao.findAllDatas(userId)
+
+    }
+    suspend fun getTravelByName(destinnation: String): Int {
+        println("\n\n ${destinnation}\n\n")
+        val userExists = ViagemDao.findByDestino(destinnation).id
+        return userExists;
     }
 }
 

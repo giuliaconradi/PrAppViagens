@@ -1,6 +1,7 @@
 package com.example.prappviagens.dao
 
 import androidx.room.*
+import com.example.prappviagens.entity.DespesaViagem
 import com.example.prappviagens.entity.User
 import com.example.prappviagens.entity.Viagem
 
@@ -28,4 +29,8 @@ interface ViagemDao {
 
     @Query("select * from viagem t where t.destino = :destino")
     suspend fun findByDestino(destino: String): Viagem
+
+    @Transaction
+    @Query("SELECT t.*, e.*, SUM(e.valor) as valueExpense FROM viagem t INNER JOIN despesa e ON t.id = e.viagemID AND t.userID = :userId GROUP BY t.destino")
+    suspend fun findAllDatas(userId: Int): List<DespesaViagem>
 }

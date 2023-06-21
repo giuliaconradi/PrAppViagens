@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.prappviagens.dao.DespesaDao
 import com.example.prappviagens.dao.UserDao
 import com.example.prappviagens.dao.ViagemDao
 import com.example.prappviagens.entity.User
@@ -14,6 +15,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
     abstract fun viagemDao(): ViagemDao
+    abstract fun DespesaDao(): DespesaDao
 
     companion object {
         @Volatile

@@ -5,12 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.prappviagens.entity.DespesaViagem
 import com.example.prappviagens.entity.Viagem
 import com.example.prappviagens.repository.ViagemRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class RegisterNewViagemViewModel(private val ViagemRepository: ViagemRepository): ViewModel() {
 
@@ -50,13 +52,26 @@ class RegisterNewViagemViewModel(private val ViagemRepository: ViagemRepository)
             }
 
         }
-    val travels: MutableStateFlow<List<Viagem>> = MutableStateFlow(emptyList())
+    val viagem: MutableStateFlow<List<Viagem>> = MutableStateFlow(emptyList())
+    val DespesaViagem: MutableStateFlow<List<DespesaViagem>> = MutableStateFlow(emptyList())
 
     fun getTravels(userId: Int) {
         viewModelScope.launch {
             val travelsRepo = ViagemRepository.getAllTravels(userId)
-            travels.value = travelsRepo
+            viagem.value = travelsRepo
+        }
+    }
+    fun getTravelsWithExpenses(userId: Int) {
+        viewModelScope.launch {
+            val travelsRepo = ViagemRepository.getAllThinks(userId)
+            DespesaViagem.value = travelsRepo
         }
     }
 
+
+    fun getTravelByName(destino: String) = runBlocking {
+        ViagemRepository.getTravelByName(destino)
     }
+
+
+}
