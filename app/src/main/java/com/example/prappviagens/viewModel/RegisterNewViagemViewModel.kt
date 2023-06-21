@@ -37,11 +37,11 @@ class RegisterNewViagemViewModel(private val ViagemRepository: ViagemRepository)
              ViagemRepository.attATravel(id, orcamento)
          }
 
-        fun registrar(parseInt: Int) {
+        fun registrar(usuario: Int) {
             val orcamentoFloat = orcamento
             try {
                 validateFields()
-                val newViagem = Viagem(userID = userID, destino = destino, data_inicial = data_inicial, data_final = data_final, orcamento = orcamentoFloat, reason = reason)
+                val newViagem = Viagem(userID = usuario.toString(), destino = destino, data_inicial = data_inicial, data_final = data_final, orcamento = orcamentoFloat, reason = reason)
                 ViagemRepository.addViagem(newViagem)
             } catch (e: Exception) {
                 viewModelScope.launch {
