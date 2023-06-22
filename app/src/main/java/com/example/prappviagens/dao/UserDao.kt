@@ -3,6 +3,7 @@ package com.example.prappviagens.dao
 import androidx.room.*
 import com.example.prappviagens.entity.User
 
+
 @Dao
 interface UserDao {
 
@@ -15,8 +16,8 @@ interface UserDao {
     @Delete
     suspend fun delete(user: User)
 
-    @Query("select * from user u order by u.name ")
-    suspend fun getAll(): List<User>
+    @Query("SELECT * FROM user ORDER BY name")
+    fun getAll(): List<User?>?
 
     @Query("select * from user u where u.name = :name")
     suspend fun findByName(name: String): User
