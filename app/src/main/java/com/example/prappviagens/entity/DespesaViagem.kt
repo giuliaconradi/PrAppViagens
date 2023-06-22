@@ -7,7 +7,7 @@ data class  DespesaViagem (
     val data_inicial: String,
     val data_final: String,
     val reason: Int,
-    val despesaID: Int = 0,
+    val DespesaID: Int = 0,
     val viagemID: Int,
     var descricao: String,
     val valor: Float

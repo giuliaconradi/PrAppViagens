@@ -84,10 +84,6 @@ fun MyApp() {
             arguments = listOf(navArgument("userID") { type = NavType.StringType })
         ) {
             val id = it.arguments?.getString("userID")
-            if (id != null) {
-                ListaViagens(id,
-                    onNavigateHome = { navController.navigateUp() })
-            }
         }
 
         composable(

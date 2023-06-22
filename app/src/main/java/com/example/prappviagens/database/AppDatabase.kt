@@ -7,10 +7,11 @@ import androidx.room.RoomDatabase
 import com.example.prappviagens.dao.DespesaDao
 import com.example.prappviagens.dao.UserDao
 import com.example.prappviagens.dao.ViagemDao
+import com.example.prappviagens.entity.Despesa
 import com.example.prappviagens.entity.User
 import com.example.prappviagens.entity.Viagem
 
-@Database(entities = [User::class, Viagem::class], version = 1)
+@Database(entities = [User::class, Viagem::class, Despesa::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
@@ -24,7 +25,7 @@ abstract class AppDatabase : RoomDatabase() {
             val instance = Room.databaseBuilder(
                 application.applicationContext,
                 AppDatabase ::class.java,
-                "meu2-db"
+                "meu3-db"
             ).build()
             INSTANCE = instance
             instance

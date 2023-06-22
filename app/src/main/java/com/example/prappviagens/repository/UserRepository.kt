@@ -26,7 +26,7 @@ class UserRepository(private val userDao: UserDao) {
     }
 
     suspend fun loadAllUsers(): List<User> {
-        return userDao.getAll()
+        return userDao.findAll()
     }
 
     suspend fun findByName(name: String): User? =

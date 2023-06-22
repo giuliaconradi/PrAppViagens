@@ -90,7 +90,7 @@ fun MenuBar(userID: String) {
                 }
                 composable("listarViagem") {
                     if (userID != null) {
-                        ListaViagens(
+                        ListTravels(
                             userID,
                             onNavigateHome = { navController.navigateUp() }
                         )
