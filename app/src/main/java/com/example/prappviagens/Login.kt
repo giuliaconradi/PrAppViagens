@@ -2,6 +2,7 @@ package com.example.prappviagens
 import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
@@ -10,6 +11,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -40,7 +43,8 @@ fun Login(onNavigateNovoCadastro: () -> Unit,
     )
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(Color(0xFFB3E5FC)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -50,6 +54,7 @@ fun Login(onNavigateNovoCadastro: () -> Unit,
             modifier = Modifier.size(280.dp)
         )
         Spacer(modifier = Modifier.height(10.dp))
+
         OutlinedTextField(
             value = viewModel.name,
             onValueChange = { viewModel.name = it },
@@ -75,13 +80,14 @@ fun Login(onNavigateNovoCadastro: () -> Unit,
                 }
             },
             modifier = Modifier
+                //.fillMaxWidth()
                 .width(280.dp)
                 .height(60.dp),
-
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color("#a2c9c6".toColorInt())),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF03A9F4)),
             contentPadding = PaddingValues(16.dp)
+
         ) {
-            Text(text = "Login")
+            Text(text = "LOGIN")
         }
         TextButton(
             onClick = { onNavigateNovoCadastro() },
@@ -91,5 +97,4 @@ fun Login(onNavigateNovoCadastro: () -> Unit,
             Text(text = "Criar novo usuário")
         }
     }
-
 }

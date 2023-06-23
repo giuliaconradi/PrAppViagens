@@ -1,6 +1,6 @@
 package com.example.prappviagens.entity
 
-data class  DespesaViagem (
+data class DespesaViagem (
     val id: Int = 0,
     val userID: Int,
     val destino: String,

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.widget.DatePicker
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
@@ -15,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -80,8 +82,20 @@ fun NovaViagem(onNavigateMenuBar: () -> Unit, userID: String) {
     }
 
     var selectedOption by remember { mutableStateOf(0) }
-    Scaffold(topBar =
-    { TopAppBar(title = { Text(text = "Nova Viagem! :)") }, navigationIcon = { }) }) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+            .padding(top = 16.dp)
+            .background(Color(0xFFB3E5FC)),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = "Novo Cadastro! :)",
+            style = MaterialTheme.typography.h5,
+            color = Color(0xFF03A9F4) // Cor desejada
+        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -102,20 +116,20 @@ fun NovaViagem(onNavigateMenuBar: () -> Unit, userID: String) {
             }
             OutlinedTextField(
                 value = viewModel.data_inicial,
-                onValueChange = {viewModel.data_inicial = it},
+                onValueChange = { viewModel.data_inicial = it },
                 label = {
-                    Text(text = "Data Inicial")
+                    Text(text = "Data de partida")
                 },
                 modifier = Modifier.onFocusChanged { a ->
                     openDatePicker(
                         a.isFocused,
-                        "Data de partida"
+                        "Data Inicial"
                     )
                 }
             )
             OutlinedTextField(
                 value = viewModel.data_final,
-                onValueChange = {viewModel.data_final = it},
+                onValueChange = { viewModel.data_final = it },
                 label = {
                     Text(text = "Data de retorno")
                 },
@@ -137,56 +151,50 @@ fun NovaViagem(onNavigateMenuBar: () -> Unit, userID: String) {
                 modifier = Modifier.padding(16.dp)
             ).toString()
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(id = R.drawable.lazer),
-                    contentDescription = "Ícone do Lazer",
-                    modifier = Modifier.size(64.dp)
-                )
                 RadioButton(
                     selected = selectedOption == 0,
                     onClick = { selectedOption = 0 },
                     modifier = Modifier.padding(start = 8.dp)
                 )
                 Text("Lazer", Modifier.padding(start = 8.dp))
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                RadioButton(
+                    selected = selectedOption == 1,
+                    onClick = { selectedOption = 1 },
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+                Text("Negócios", Modifier.padding(start = 8.dp))
             }
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Button(
+                onClick = {
+                    var id = 0
 
-            Icon(
-                painter = painterResource(id = R.drawable.trabalho),
-                contentDescription = "Ícone de Negócios",
-                modifier = Modifier.size(64.dp)
-            )
-            RadioButton(
-                selected = selectedOption == 1,
-                onClick = { selectedOption = 1 },
-                modifier = Modifier.padding(start = 8.dp)
-            )
-            Text("Negócios", Modifier.padding(start = 8.dp))
+                    scope.launch {
+                        if (checkFields(viewModel)) {
+                            viewModel.registrar(Integer.parseInt(userID))
+                            expenseModel.registrar(viewModel.getTravelByName(viewModel.destino))
+                            println("F!")
+                            onNavigateMenuBar()
+                        }
+
+                    }
+                },
+                modifier = Modifier
+                    //.fillMaxWidth()
+                    .width(280.dp)
+                    .height(60.dp),
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF03A9F4)),
+                contentPadding = PaddingValues(16.dp)
+            ) {
+                Text(
+                    text = "SALVAR"
+                )
+            }
         }
-    }
-
-    Button(
-        onClick = {
-            var id = 0
-
-            scope.launch {
-                if (checkFields(viewModel)) {
-                    viewModel.registrar(Integer.parseInt(userID))
-                    expenseModel.registrar(viewModel.getTravelByName(viewModel.destino))
-                    println("F!")
-                    onNavigateMenuBar()
-                }
-
-            }
-        },
-        modifier = Modifier
-            .padding(top = 16.dp)
-            .width(150.dp)
-    ) {
-        Text(
-            text = "OK"
-        )
     }
 }
 

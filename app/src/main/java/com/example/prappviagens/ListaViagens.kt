@@ -1,35 +1,34 @@
 package com.example.prappviagens
 
+import android.app.Application
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement.Absolute.Center
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import android.app.Application
-import androidx.compose.foundation.border
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.prappviagens.entity.Despesa
 import com.example.prappviagens.entity.DespesaViagem
 import com.example.prappviagens.viewModel.RegisterNewDespesaViewModel
 import com.example.prappviagens.viewModel.RegisterNewDespesaViewModelFactory
-import com.example.prappviagens.viewModel.RegisterNewUserViewModelFactory
 import com.example.prappviagens.viewModel.RegisterNewViagemViewModel
 import com.example.prappviagens.viewModel.RegisterNewViagemViewModelFactory
 import kotlinx.coroutines.launch
+
 
 @Composable
 fun screen(
@@ -38,7 +37,7 @@ fun screen(
     selecao: Boolean,
     viewModel: RegisterNewViagemViewModel,
     onCardClick: (DespesaViagem) -> Unit,
-    onNavigateHome: () -> Unit,
+    onNavigateMenuBar: () -> Unit,
 ) {
     val application = LocalContext.current.applicationContext as Application
     val expenseViewModel: RegisterNewDespesaViewModel = viewModel(
@@ -59,7 +58,7 @@ fun screen(
             .fillMaxWidth()
             .clickable { onCardClick(viagem) },
         elevation = 8.dp,
-        backgroundColor = Color.White,
+        backgroundColor = Color(0xFFB3E5FC)
     ) {
         Row {
             Image(
@@ -72,14 +71,16 @@ fun screen(
             Row(modifier = Modifier.padding(4.dp)) {
                 Column {
                     Text(
-                        text = viagem.destino, style = MaterialTheme.typography.subtitle1
+                        text = viagem.destino,
+                        style = MaterialTheme.typography.subtitle1,
+                        color = Color(0xFFFF4081)
                     )
                     Text(
-                        text = "${viagem.data_inicial} --> ${viagem.data_final}",
+                        text = "Partida: ${viagem.data_inicial} Chegada: ${viagem.data_final}",
                         style = MaterialTheme.typography.subtitle2
                     )
                     Text(
-                        text = "Valor Total: ${formatFloat(viagem.valor)}R$",
+                        text = "Total: ${formatFloat(viagem.valor)}",
                         style = MaterialTheme.typography.subtitle2
                     )
                 }
@@ -94,10 +95,13 @@ fun screen(
             onDescriptionTextChanged = {
                 descriptionText = it
             })
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color(0xFFF3E5F5)) // Defina a cor de fundo desejada aqui (rosa bebê)
                 .padding(horizontal = 16.dp),
+        ) {}
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -110,11 +114,12 @@ fun screen(
                         )
                         descriptionText = ""
                         viewModel.getTravelsWithExpenses(viagem.userID)
-                        onNavigateHome()
+                        onNavigateMenuBar()
                     }
                 }, modifier = Modifier
                     .padding(top = 16.dp)
                     .width(150.dp)
+                    .align(Alignment.CenterHorizontally),
             ) {
                 Text("Atualizar")
             }
@@ -158,15 +163,17 @@ fun expensesPresent(expense: Despesa) {
                 text = expense.descricao,
                 modifier = Modifier
                     .weight(1.0f)
-                    .border(1.dp, Color.Black)
+                    .border(3.dp, Color(0xFF03A9F4))
                     .padding(4.dp)
+                    .background(Color(0xFFB3E5FC))
             )
             Text(
                 text = expense.valor.toString(),
                 modifier = Modifier
                     .weight(1.0f)
-                    .border(1.dp, Color.Black)
+                    .border(3.dp, Color(0xFF03A9F4))
                     .padding(4.dp)
+                    .background(Color(0xFFB3E5FC))
             )
         }
     }
@@ -189,17 +196,6 @@ fun moreExpenses(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         ListExpenses(travels.viagemID.toString())
-        OutlinedTextField(
-            value = orcamento.toString(),
-            onValueChange = { orcamento = it.toFloatOrNull() ?: 0f },
-            label = { Text("Despesa atual") },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = {
-
-            }),
-            modifier = Modifier.padding(16.dp),
-            enabled = false
-        )
         OutlinedTextField(
             value = viewModel.orcamento.toString(),
             onValueChange = { viewModel.orcamento = it.toFloatOrNull() ?: 0f },
@@ -226,27 +222,27 @@ fun moreExpenses(
 }
 
 @Composable
-fun ListTravels(userID: String, onNavigateHome: () -> Unit) {
+fun ListaViagens(userID: String, onNavigateMenuBar: () -> Unit) {
     val application = LocalContext.current.applicationContext as Application
     val viewModel: RegisterNewViagemViewModel = viewModel(
         factory = RegisterNewViagemViewModelFactory(application)
     )
 
-    val selectedTravelId = remember { mutableStateOf<Int?>(null) }
+    val pViagemID = remember { mutableStateOf<Int?>(null) }
 
     viewModel.getTravelsWithExpenses(Integer.parseInt(userID))
-    val travels by viewModel.DespesaViagem.collectAsState()
+    val viagem by viewModel.DespesaViagem.collectAsState()
 
 
     LazyColumn() {
-        items(items = travels.filter { selectedTravelId.value == null || it.id == selectedTravelId.value }) { travel ->
-            val iconReason = when (travel.reason) {
-                0 -> R.drawable.trabalho
-                else -> R.drawable.lazer
+        items(items = viagem.filter { pViagemID.value == null || it.id == pViagemID.value }) { viagem ->
+            val iconReason = when (viagem.reason) {
+                0 -> R.drawable.lazer
+                else -> R.drawable.trabalho
             }
-            screen(travel, iconReason, selectedTravelId.value != null, viewModel, onCardClick = {
-                selectedTravelId.value = it.id
-            }, onNavigateHome = { selectedTravelId.value = null })
+            screen(viagem, iconReason, pViagemID.value != null, viewModel, onCardClick = {
+                pViagemID.value = it.id
+            }, onNavigateMenuBar = { pViagemID.value = null })
         }
     }
 }

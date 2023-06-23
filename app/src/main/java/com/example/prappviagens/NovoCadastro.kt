@@ -2,6 +2,7 @@ package com.example.prappviagens.ui.theme
 
 import android.annotation.SuppressLint
 import android.app.Application
+import androidx.compose.foundation.background
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
@@ -37,11 +38,17 @@ fun NovoCadastro(onBackNavigate: () -> Unit){
 
     Column(
         modifier = Modifier
-            .fillMaxSize(),
-        //.background(Color.LightGray),
+            .fillMaxSize()
+            .background(Color(0xFFB3E5FC)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(
+            text = "Novo Cadastro! :)",
+            style = MaterialTheme.typography.h5,
+            color = Color(0xFF03A9F4) // Cor desejada
+        )
+        Spacer(modifier = Modifier.height(50.dp))
         OutlinedTextField( //campo usuário
             value = viewModel.name,
             onValueChange = { viewModel.name = it },
@@ -72,10 +79,10 @@ fun NovoCadastro(onBackNavigate: () -> Unit){
                 //.fillMaxWidth()
                 .width(280.dp)
                 .height(60.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Cyan),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF03A9F4)),
             contentPadding = PaddingValues(16.dp)
         ) {
-            Text(text = "Cadastrar")
+            Text(text = "CADASTRAR")
         }
     }
 }

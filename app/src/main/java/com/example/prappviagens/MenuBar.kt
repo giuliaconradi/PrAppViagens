@@ -1,7 +1,9 @@
 package com.example.prappviagens
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -10,6 +12,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -63,7 +66,11 @@ fun MenuBar(userID: String) {
             }
         }
     ) {
-        Column() {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFB3E5FC)),
+        ) {
             NavHost(
                 navController = navController,
                 startDestination = "listarViagem",
@@ -90,9 +97,9 @@ fun MenuBar(userID: String) {
                 }
                 composable("listarViagem") {
                     if (userID != null) {
-                        ListTravels(
+                        ListaViagens(
                             userID,
-                            onNavigateHome = { navController.navigateUp() }
+                            onNavigateMenuBar = { navController.navigateUp() }
                         )
                     }
                 }
