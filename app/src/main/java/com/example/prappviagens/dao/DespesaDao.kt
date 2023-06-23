@@ -10,20 +10,20 @@ import com.example.prappviagens.entity.Despesa
 @Dao
 interface DespesaDao {
     @Insert
-    fun insert(despesa: Despesa)
+    suspend fun insert(despesa: Despesa)
 
     @Update
-    fun update(despesa: Despesa)
+    suspend fun update(despesa: Despesa)
 
     @Query("UPDATE despesa SET valor = :value WHERE DespesaID = :id ")
-    fun incrementaDespesa(id: Int, value: Float)
+    suspend fun incrementaDespesa(id: Int, value: Float)
 
     @Delete
-    fun delete(expense: Despesa)
+    suspend fun delete(expense: Despesa)
 
     @Query("select * from despesa e order by e.valor")
-    fun findAll(): List<Despesa>
+    suspend fun findAll(): List<Despesa>
 
     @Query("select * from despesa e where e.viagemID =:travelId order by e.valor")
-    fun findAllByTravel(travelId: Int): List<Despesa>
+    suspend fun findAllByTravel(travelId: Int): List<Despesa>
 }

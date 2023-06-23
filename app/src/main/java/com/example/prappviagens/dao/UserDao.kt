@@ -6,21 +6,21 @@ import com.example.prappviagens.entity.User
 @Dao
 interface UserDao {
         @Insert
-        fun insert(user: User)
+        suspend fun insert(user: User)
 
         @Update
-        fun update(user: User)
+        suspend fun update(user: User)
 
         @Delete
-        fun delete(user: User)
+        suspend fun delete(user: User)
 
         @Query("select * from user u order by u.name")
-        fun findAll(): List<User>
+        suspend fun findAll(): List<User>
 
         @Query("select * from user u where u.name = :name")
-        fun findByName(name: String): User
+        suspend fun findByName(name: String): User
 
         @Query("select * from user u where u.name = :name and u.password = :password")
-        fun findByCredentials(name: String, password:String): List<User>
+        suspend fun findByCredentials(name: String, password:String): List<User>
 
     }

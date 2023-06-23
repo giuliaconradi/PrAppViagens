@@ -37,6 +37,8 @@ fun NovaViagem(onNavigateMenuBar: () -> Unit, userID: String) {
     val viewModel: RegisterNewViagemViewModel = viewModel(
         factory = RegisterNewViagemViewModelFactory(application)
     )
+    val context = LocalContext.current
+
     val ano: Int
     val mes: Int
     val dia: Int
@@ -48,23 +50,24 @@ fun NovaViagem(onNavigateMenuBar: () -> Unit, userID: String) {
 
     calendario.time = Date()
 
-    val mDatePickerDialogStart= android.app.DatePickerDialog(
-        application,
+    val mDatePickerDialogStart = android.app.DatePickerDialog(
+        context,
         { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
             viewModel.data_inicial = "$mDayOfMonth/${mMonth + 1}/$mYear"
         }, ano, mes, dia
     )
     val mDatePickerDialogEnd = android.app.DatePickerDialog(
-        application,
+        context,
         { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
             viewModel.data_final = "$mDayOfMonth/${mMonth + 1}/$mYear"
         }, ano, mes, dia
     )
+
     fun openDatePicker(focused: Boolean, date: String) {
         if (focused && date == "Data Inicial") {
             mDatePickerDialogStart.show();
         }
-        if (focused && date == "Data Final"){
+        if (focused && date == "Data Final") {
             mDatePickerDialogEnd.show()
         }
     }
@@ -96,7 +99,12 @@ fun NovaViagem(onNavigateMenuBar: () -> Unit, userID: String) {
                 label = {
                     Text(text = "Start Date")
                 },
-                modifier = Modifier.onFocusChanged { a -> openDatePicker(a.isFocused, "Data Inicial") }
+                modifier = Modifier.onFocusChanged { a ->
+                    openDatePicker(
+                        a.isFocused,
+                        "Data Inicial"
+                    )
+                }
             )
             OutlinedTextField(
                 value = viewModel.data_final,
@@ -104,7 +112,12 @@ fun NovaViagem(onNavigateMenuBar: () -> Unit, userID: String) {
                 label = {
                     Text(text = "End Date")
                 },
-                modifier = Modifier.onFocusChanged { b -> openDatePicker(b.isFocused, "Data Final") }
+                modifier = Modifier.onFocusChanged { b ->
+                    openDatePicker(
+                        b.isFocused,
+                        "Data Final"
+                    )
+                }
             )
             OutlinedTextField(
                 value = viewModel.orcamento.toString(),
@@ -144,26 +157,26 @@ fun NovaViagem(onNavigateMenuBar: () -> Unit, userID: String) {
             )
             Text("Negócios", Modifier.padding(start = 8.dp))
         }
-            }
+    }
 
-            Button(
-                onClick = {
-                    if (checkFields(viewModel)) {
-                        viewModel.registrar(Integer.parseInt(userID))
-                        println()
-                        onNavigateMenuBar()
+    Button(
+        onClick = {
+            if (checkFields(viewModel)) {
+                viewModel.registrar(Integer.parseInt(userID))
+                println()
+                onNavigateMenuBar()
 
-                    }
-                },
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .width(150.dp)
-            ) {
-                Text(
-                    text = "OK"
-                )
             }
-        }
+        },
+        modifier = Modifier
+            .padding(top = 16.dp)
+            .width(150.dp)
+    ) {
+        Text(
+            text = "OK"
+        )
+    }
+}
 
 fun checkFields(viewModel: RegisterNewViagemViewModel): Boolean {
     return viewModel.orcamento != null &&
