@@ -42,7 +42,7 @@ fun screen(
 ) {
     val application = LocalContext.current.applicationContext as Application
     val expenseViewModel: RegisterNewDespesaViewModel = viewModel(
-        factory = RegisterNewUserViewModelFactory(application)
+        factory = RegisterNewDespesaViewModelFactory(application)
     )
     var id by remember { mutableStateOf(0) }
 
@@ -105,7 +105,7 @@ fun screen(
                 onClick = {
                     scope.launch {
                         val id = viagem.viagemID
-                        expenseViewModel.registrar(
+                        expenseViewModel.vDespesa(
                             id, descriptionText, viewModel.orcamento
                         )
                         descriptionText = ""

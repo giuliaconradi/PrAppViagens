@@ -21,8 +21,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.prappviagens.viewModel.RegisterNewDespesaViewModel
+import com.example.prappviagens.viewModel.RegisterNewDespesaViewModelFactory
 import com.example.prappviagens.viewModel.RegisterNewViagemViewModel
 import com.example.prappviagens.viewModel.RegisterNewViagemViewModelFactory
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -37,6 +40,10 @@ fun NovaViagem(onNavigateMenuBar: () -> Unit, userID: String) {
     val viewModel: RegisterNewViagemViewModel = viewModel(
         factory = RegisterNewViagemViewModelFactory(application)
     )
+    val expenseModel: RegisterNewDespesaViewModel = viewModel(
+        factory = RegisterNewDespesaViewModelFactory(application)
+    )
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
     val ano: Int
@@ -95,22 +102,22 @@ fun NovaViagem(onNavigateMenuBar: () -> Unit, userID: String) {
             }
             OutlinedTextField(
                 value = viewModel.data_inicial,
-                onValueChange = {},
+                onValueChange = {viewModel.data_inicial = it},
                 label = {
-                    Text(text = "Start Date")
+                    Text(text = "Data Inicial")
                 },
                 modifier = Modifier.onFocusChanged { a ->
                     openDatePicker(
                         a.isFocused,
-                        "Data Inicial"
+                        "Data de partida"
                     )
                 }
             )
             OutlinedTextField(
                 value = viewModel.data_final,
-                onValueChange = {},
+                onValueChange = {viewModel.data_final = it},
                 label = {
-                    Text(text = "End Date")
+                    Text(text = "Data de retorno")
                 },
                 modifier = Modifier.onFocusChanged { b ->
                     openDatePicker(
@@ -120,9 +127,9 @@ fun NovaViagem(onNavigateMenuBar: () -> Unit, userID: String) {
                 }
             )
             OutlinedTextField(
-                value = viewModel.orcamento.toString(),
-                onValueChange = { viewModel.orcamento = it.toFloatOrNull() ?: 0f },
-                label = { Text("Orçamento") },
+                value = expenseModel.valor.toString(),
+                onValueChange = { expenseModel.valor = it.toFloatOrNull() ?: 0f },
+                label = { Text("Valor") },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(
                     onNext = { /* Ação para avançar para o próximo campo */ }
@@ -161,10 +168,15 @@ fun NovaViagem(onNavigateMenuBar: () -> Unit, userID: String) {
 
     Button(
         onClick = {
-            if (checkFields(viewModel)) {
-                viewModel.registrar(Integer.parseInt(userID))
-                println()
-                onNavigateMenuBar()
+            var id = 0
+
+            scope.launch {
+                if (checkFields(viewModel)) {
+                    viewModel.registrar(Integer.parseInt(userID))
+                    expenseModel.registrar(viewModel.getTravelByName(viewModel.destino))
+                    println("F!")
+                    onNavigateMenuBar()
+                }
 
             }
         },

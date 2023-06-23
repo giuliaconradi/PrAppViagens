@@ -17,8 +17,12 @@ class RegisterNewDespesaViewModel (private val despesaRepository: DespesaReposit
     var valor by  mutableStateOf(0f)
     var reason by  mutableStateOf(0)
 
+    suspend fun vDespesa(travel: Int,desc:String, value: Float){
+        val despesa = Despesa(DespesaID = 0, viagemID = travel, descricao = desc, valor = value )
+        return despesaRepository.insertDespesa(despesa)
 
-    suspend fun registrar(viagem: Int, descriptionText: String, orcamento: Float){
+    }
+    suspend fun registrar(viagem: Int){
         val despesa = Despesa(DespesaID = 0, viagemID = viagem, descricao = descricao, valor = valor )
         return despesaRepository.insertDespesa(despesa)
 
